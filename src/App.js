@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
+
 function App() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
@@ -12,18 +13,25 @@ function App() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message }), 
     })
-      .then(response => response.json())
-      .then(data => setResponse(data.message))
+      .then((res) => res.json())
+      .then((data) => setResponse(data.message))
   };
 
   return (
     <div className="App">
-      <h1>Text-Savvy</h1>
-      <textarea rows="10" cols="35" placeholder="Enter your text here"></textarea>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Response here</p>
+      <form onSubmit={handleSubmit}>
+        <h1>Text-Savvy</h1>
+        <textarea
+          rows="10"
+          cols="35"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <button type='submit'>Submit</button>
+        <p>{response}</p>
+      </form>
     </div>
   );
 }
