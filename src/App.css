@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.bubble-sender {
+  position: relative;
+  background-color: #007AFF;
+  border-radius: 20px 20px 0 20px;
+  color: white;
+  padding: 10px;
+  display: inline-block;
+  max-width: 80%;
+  margin: 10px 10px 10px auto;
+}
+
+.bubble-receiver {
+  position: relative;
+  background-color: #d8dde1;
+  border-radius: 20px 20px 20px 0;
+  color: black;
+  padding: 10px;
+  display: inline-block;
+  max-width: 80%;
+  margin: 10px auto 10px 10px;
+}
+
