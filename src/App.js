@@ -20,6 +20,8 @@ function ResponseBubble({ text }) {
 function App() {
   const [newMessage, setNewMessage] = useState("");
   const [convo, setConvo] = useState([]);
+  const [jsonObject, setJsonObject] = useState(null);
+
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -28,16 +30,31 @@ function App() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message: newMessage }), 
+      body: JSON.stringify({ message: newMessage }),
     }).then(res => res.json())
-
+    if (response.jsonObject) {
+      setJsonObject(response.jsonObject);
+    }
     setConvo([...convo, { message: newMessage, response: response.message }]);
     setNewMessage('');
+  };
+
+  const closeBanner = () => {
+    setJsonObject(null);
   };
 
   return (
     <div className="App flex flex-col justify-between h-screen bg-gray-100 p-5">
       <h1 className="text-3xl mb-4">Text-Savvy</h1>
+      {jsonObject &&
+        <div className={`fixed top-0 left-0 w-full text-white p-4 flex justify-between items-center space-x-4 ${jsonObject.score <= 4 ? 'bg-red-500' : jsonObject.score <= 7 ? 'bg-yellow-500' : 'bg-green-500'}`}>
+          <div>
+            <h2 className="font-bold">Score: {jsonObject.score}</h2>
+            <p>Reason: {jsonObject.reason}</p>
+          </div>
+          <button onClick={closeBanner} className="bg-white text-black p-2 rounded">Close</button>
+        </div>
+      }
       <div className="flex flex-col overflow-auto mb-4">
         {convo.map((item, index) => (
           <React.Fragment key={index}>
