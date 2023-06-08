@@ -10,6 +10,10 @@ function MessageBubble({ text }) {
 }
 
 function ResponseBubble({ text }) {
+  if (text === null) {
+    // Render nothing while waiting for the response
+    return null;
+  }
   return (
     <div className="bubble-receiver">
       {text}
@@ -25,6 +29,8 @@ function App() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setNewMessage('');
+    setConvo(prevConvo => [...prevConvo, { message: newMessage, response: null }]);
     const response = await fetch('http://localhost:3001/', {
       method: 'POST',
       headers: {
@@ -32,11 +38,12 @@ function App() {
       },
       body: JSON.stringify({ message: newMessage }),
     }).then(res => res.json())
-    if (response.jsonObject) {
-      setJsonObject(response.jsonObject);
-    }
-    setConvo([...convo, { message: newMessage, response: response.message }]);
-    setNewMessage('');
+    setJsonObject(response.jsonObject);
+    setConvo(prevConvo => {
+      const convoCopy = [...prevConvo];
+      convoCopy[convoCopy.length - 1].response = response.message;
+      return convoCopy;
+    });
   };
 
   const closeBanner = () => {
@@ -45,7 +52,7 @@ function App() {
 
   return (
     <div className="App flex flex-col justify-between h-screen bg-gray-100 p-5">
-      <h1 className="text-3xl mb-4">Text-Savvy</h1>
+      <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Text-Savvy</h1>
       {jsonObject &&
         <div className={`fixed top-0 left-0 w-full text-white p-4 flex justify-between items-center space-x-4 ${jsonObject.score <= 4 ? 'bg-red-500' : jsonObject.score <= 7 ? 'bg-yellow-500' : 'bg-green-500'}`}>
           <div>
@@ -70,6 +77,12 @@ function App() {
           placeholder='Type a message...'
           value={newMessage}
           onChange={e => setNewMessage(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSubmit(e);
+            }
+          }}
         />
         <button type='submit' className="py-2 px-6 rounded bg-blue-500 text-white">
           Submit
