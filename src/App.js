@@ -3,7 +3,7 @@ import './App.css';
 
 function MessageBubble({ text }) {
   return (
-    <div className="bubble-sender">
+    <div className="relative bg-blue-600 text-white p-2 inline-block bubble-sender">
       {text}
     </div>
   );
@@ -15,7 +15,7 @@ function ResponseBubble({ text }) {
     return null;
   }
   return (
-    <div className="bubble-receiver">
+    <div className="relative bg-gray-200 text-black p-2 inline-block bubble-receiver">
       {text}
     </div>
   );
@@ -25,7 +25,6 @@ function App() {
   const [newMessage, setNewMessage] = useState("");
   const [convo, setConvo] = useState([]);
   const [jsonObject, setJsonObject] = useState(null);
-
 
   const handleSubmit = async e => {
     e.preventDefault();
