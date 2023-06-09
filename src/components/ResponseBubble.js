@@ -5,7 +5,7 @@ export default function ResponseBubble({ text }) {
     return null;
   }
   return (
-    <div className="relative bg-gray-200 text-black p-2 inline-block bubble-receiver">
+    <div className="relative bg-gray-200 text-black p-3 inline-block bubble-receiver">
       {text}
     </div>
   );

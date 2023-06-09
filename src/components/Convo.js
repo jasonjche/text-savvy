@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import MessageBubble from './MessageBubble';
 import ResponseBubble from './ResponseBubble';
 
 export default function Convo({ convo }) {
+  const endOfMessagesRef = useRef(null);
+
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [convo]);
+
   return (
     <div className="flex flex-col overflow-auto mb-4">
       {convo.map((item, index) => (
@@ -11,6 +21,7 @@ export default function Convo({ convo }) {
           <ResponseBubble text={item.response} />
         </React.Fragment>
       ))}
+      <div ref={endOfMessagesRef} />
     </div>
   );
 }

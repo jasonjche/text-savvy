@@ -9,6 +9,7 @@ function App() {
   const [jsonObject, setJsonObject] = useState(null);
 
   const handleSubmit = async e => {
+    if (newMessage === '') return;
     e.preventDefault();
     setNewMessage('');
     setConvo(prevConvo => [...prevConvo, { message: newMessage, response: null }]);

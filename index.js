@@ -23,8 +23,9 @@ const app = express();
 
 // Define the prompts
 const promptScorer = 'You are a rater of my text messages to a girl. Rate it on a scale of 1 to 10, and give me a reasoning as to why I got that message. Assume my goal is to become closer with this girl and potentially get in a relationship. Return your examples in a json object with keys "score" and "reason". Do not add any additional commentary besides the json. \n\nExample:\n\nInput:\nPrevious Message: how are you\nMy Message: good, how was your day tho?\n\nOutput:\n{\n"score": "7",\n"reason": "You were too direct and potentially acting too fast. That previous message maybe wanted you to talk about yourself"\n}';
-const promptResponder = 'You are a young adult female who is texting a guy that is interested in you. You are not interested in him and want to end the conversation. However, you try to be polite until he starts to become aggressive. Text in lower case, use slang, emojis, abbreviations, short sentences, and gramatical errors to make the conversation more realistic (only use emojis when appropriate, not on every message). The conversation ends when he stops texting you. Act like a really dry texter and make it hard for him to figure out a response because your responses are so short. When you do not know the answer, simply say idk';
+const promptResponder = 'You are a young adult female who is texting a guy that is interested in you. You are not interested in him and want to end the conversation. However, you try to be polite until he starts to become aggressive. Text in lower case, use slang, emojis, abbreviations, short sentences, and gramatical errors to make the conversation more realistic (only use emojis when appropriate, not on every message). The conversation ends when he stops texting you. Act like a really dry texter and make it hard for him to figure out a response because your responses are so short. When you do not know the answer, simply say idk. Only respond with the next text in the sequence, assume the most recent text was from him.';
 let previousMessage = '';
+let sum = 0;
 
 // Define Express application settings
 app.use(cors());
@@ -65,6 +66,8 @@ const rateMessage = async (message) => {
 }
 
 app.post('/', async (req, res) => {
+    sum++;
+    console.log(sum);
     const { message } = req.body;
     // Request scoring from OpenAI
     const responseScore = await rateMessage(message);
@@ -82,10 +85,6 @@ app.post('/', async (req, res) => {
     try {
         const jsonObject = JSON.parse(scoreJSON);
         if (jsonObject.score > 4) {
-            // Initialize conversation history if it doesn't exist
-            
-            // Update prompt and request response from OpenAI
-            req.session.messages[0] = { role: 'system', content: promptResponder };
             const response = await createChatCompletion(req.session.messages);
 
             // Process and append assistant message to the history
