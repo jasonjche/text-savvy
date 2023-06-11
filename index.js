@@ -27,6 +27,8 @@ const promptResponder = 'You are a young adult female who is texting a guy that 
 const promptResponder2 = 'You are the mom of a student who is texting you. Text properly but in a casual manner like a mom would.'
 let previousMessage = '';
 let messageArray = [];
+let messageMap = {'friend': [], 'mom': []};
+let currentMode = 'friend';
 
 // Define Express application settings
 app.use(cors());
@@ -37,10 +39,9 @@ app.use(session({
     saveUninitialized: true
 }));
 
-const initializeMessages = (message) => {
+const initializeMessages = (prompt) => {
     messageArray = [
-        { role: 'system', content: promptResponder },
-        { role: 'user', content: message },
+        { role: 'system', content: prompt },
     ];
 };
 
@@ -72,11 +73,9 @@ app.post('/', async (req, res) => {
     const { message } = req.body;
     console.log(message);
     if (messageArray.length === 0) {
-        initializeMessages(message);
-    } else {
-        // Append user message to the history
-        appendUserMessage(message);
+        initializeMessages(promptResponder);
     }
+    appendUserMessage(message);
 
     console.log(messageArray);
 
@@ -104,8 +103,23 @@ app.post('/', async (req, res) => {
 });
 
 app.post('/changeMode', async (req, res) => {
-    messageArray[0] = { role: 'system', content: promptResponder2 };
-    res.json({ message: 'Mode changed to mom mode' });
+    const { mode } = req.body;
+    messageMap[currentMode] = messageArray;
+    currentMode = mode;
+    switch (mode) {
+        case 'mom': messageArray = messageMap['mom'];
+            console.log(messageArray);
+            if (messageArray.length === 0) {
+                initializeMessages(promptResponder2);
+            }
+            break;
+        case 'friend': messageArray = messageMap['friend'];
+            if (messageArray.length === 0) {
+                initializeMessages(promptResponder);
+            }
+            break;
+    }
+    console.log(mode);
 });
 
 app.listen(port, () => {

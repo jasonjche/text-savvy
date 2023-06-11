@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Banner from './components/Banner';
 import Convo from './components/Convo';
+import ChatButton from './components/ChatButton';
 import MessageForm from './components/MessageForm';
-import Sidebar from './components/Sidebar';
 
 function App() {
   const [newMessage, setNewMessage] = useState("");
   const [convo, setConvo] = useState([]);
   const [jsonObject, setJsonObject] = useState(null);
-  //const [selectedChat, setSelectedChat] = useState("null");
+  const [selectedChat, setSelectedChat] = useState("null");
 
   const handleSubmit = async e => {
     if (newMessage === '') return;
@@ -34,23 +34,31 @@ function App() {
     setJsonObject(null);
   };
 
-  const changeMode = () => {
-    fetch ('http://localhost:3001/changeMode', {
+  const changeMode = (mode) => {
+    setSelectedChat(mode);
+    fetch('http://localhost:3001/changeMode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ mode }),
     }).then(res => res.json())
   };
 
   return (
-    <div className="text-center flex flex-col justify-between h-screen bg-gray-100 p-5">
-      <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Text-Savvy</h1>
-      <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={changeMode}>Change</button>
-      <Convo convo={convo} />
-      <MessageForm newMessage={newMessage} setNewMessage={setNewMessage} handleSubmit={handleSubmit} />
+    <div className="text-center flex flex-row h-screen bg-gray-100 p-5">
+      <div className='flex flex-col w-1/4 bg-gray-300'>
+        <ChatButton mode="mom" selectedChat={selectedChat} changeMode={changeMode} />
+        <ChatButton mode="friend" selectedChat={selectedChat} changeMode={changeMode} />
+      </div>
+      <div className='flex flex-col w-3/4'>
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Text-Savvy</h1>
+        <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
+        <div className="">
+          <Convo convo={convo} />
+          <MessageForm newMessage={newMessage} setNewMessage={setNewMessage} handleSubmit={handleSubmit} />
+        </div>
+      </div>
     </div>
   );
 }
