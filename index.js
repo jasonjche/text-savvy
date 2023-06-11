@@ -24,6 +24,7 @@ const app = express();
 // Define the prompts
 const promptScorer = 'You are a rater of my text messages to a girl. Rate it on a scale of 1 to 10, and give me a reasoning as to why I got that message. Assume my goal is to become closer with this girl and potentially get in a relationship. Return your examples in a json object with keys "score" and "reason". Do not add any additional commentary besides the json. \n\nExample:\n\nInput:\nPrevious Message: how are you\nMy Message: good, how was your day tho?\n\nOutput:\n{\n"score": "7",\n"reason": "You were too direct and potentially acting too fast. That previous message maybe wanted you to talk about yourself"\n}';
 const promptResponder = 'You are a young adult female who is texting a guy that is interested in you. You are not interested in him and want to end the conversation. However, you try to be polite until he starts to become aggressive. Text in lower case, use slang, emojis, abbreviations, short sentences, and gramatical errors to make the conversation more realistic (only use emojis when appropriate, not on every message). The conversation ends when he stops texting you. Act like a really dry texter and make it hard for him to figure out a response because your responses are so short. When you do not know the answer, simply say idk. Only respond with the next text in the sequence, assume the most recent text was from him.';
+const promptResponder2 = 'You are the mom of a student who is texting you. Text properly but in a casual manner like a mom would.'
 let previousMessage = '';
 let messageArray = [];
 
@@ -62,7 +63,9 @@ const rateMessage = async (message) => {
         { role: 'system', content: promptScorer },
         { role: 'user', content: formattedMessage },
     ];
-    return await createChatCompletion(messages);
+    const responseScore = await createChatCompletion(messages);
+    const scoreJSON = responseScore.data.choices[0].message.content;
+    return JSON.parse(scoreJSON);
 }
 
 app.post('/', async (req, res) => {
@@ -78,11 +81,10 @@ app.post('/', async (req, res) => {
     console.log(messageArray);
 
     try {
-        const responseScore = await rateMessage(message);
-        const scoreJSON = responseScore.data.choices[0].message.content;
-        const jsonObject = JSON.parse(scoreJSON);
+        const jsonObject = await rateMessage(message);
+        const score = jsonObject.score;
 
-        if (jsonObject.score > 4) {
+        if (score > 4) {
             const response = await createChatCompletion(messageArray);
 
             // Process and append assistant message to the history
@@ -99,6 +101,11 @@ app.post('/', async (req, res) => {
     } catch (e) {
         console.error('Error:', e);
     }
+});
+
+app.post('/changeMode', async (req, res) => {
+    messageArray[0] = { role: 'system', content: promptResponder2 };
+    res.json({ message: 'Mode changed to mom mode' });
 });
 
 app.listen(port, () => {
