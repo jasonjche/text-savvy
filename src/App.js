@@ -46,24 +46,24 @@ function App() {
     }).then(res => res.json())
   };
 
-  const testChatModes = ["Friend", "Mom", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend"];
+  const testChatModes = ["Friend", "Mom", "Friend2", "Friend3", "Friend4", "Friend5", "Friend6", "Friend7", "Friend8", "Friend9", "Friend10", "Friend11"]
   return (
-  <div className="text-center flex flex-row h-screen bg-gray-100 p-5">
-    <div className='flex flex-col w-1/4'>
-    <h1 className="text-left text-4xl font-bold tracking-tight text-gray-900 sm:text-3xl">Text-Savvy</h1>
-    <ChatButtonList chatModes={testChatModes} selectedChat={selectedChat} changeMode={changeMode} />
-    </div>
+    <div className="text-center flex flex-row h-screen bg-gray-100 px-2 py-4 space-x-3">
+      <div className='flex flex-col w-1/4 space-y-2'>
+        <h1 className="text-left text-4xl font-bold tracking-tight text-gray-900 sm:text-3xl">Text-Savvy</h1>
+        <ChatButtonList chatModes={testChatModes} selectedChat={selectedChat} changeMode={changeMode} />
+      </div>
       <div className='flex flex-col w-3/4'>
-      <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
-      <div className="flex-grow flex flex-col">
-        <Convo convo={convo} />
-        <div className="mt-auto">
-          <MessageForm newMessage={newMessage} setNewMessage={setNewMessage} handleSubmit={handleSubmit} />
+        <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
+        <div className="flex-grow flex flex-col">
+          <Convo convo={convo} />
+          <div className="mt-auto">
+            <MessageForm newMessage={newMessage} setNewMessage={setNewMessage} handleSubmit={handleSubmit} />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;
