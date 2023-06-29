@@ -46,7 +46,7 @@ function App() {
     }).then(res => res.json())
   };
 
-  const testChatModes = ["Friend", "Mom", "Friend2", "Friend3", "Friend4", "Friend5", "Friend6", "Friend7", "Friend8", "Friend9", "Friend10", "Friend11"]
+  const testChatModes = ["Friend", "Mom", "Dad", "Brother", "Sister", "Grandma", "Grandpa", "Aunt", "Uncle", "Cousin", "Boss", "Coworker", "Teacher", "Student", "Crush", "Ex", "Enemy", "Stranger", "Pet", "Self", "Other"];
   return (
     <div className="text-center flex flex-row h-screen bg-gray-100 px-2 py-4 space-x-3">
       <div className='flex flex-col w-1/4 space-y-2'>
