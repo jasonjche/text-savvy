@@ -21,14 +21,10 @@ const openai = new OpenAIApi(configuration);
 const port = 3001;
 const app = express();
 
-// Define the prompts
-const promptScorer = 'You are a rater of my text messages to a girl. Rate it on a scale of 1 to 10, and give me a reasoning as to why I got that message. Assume my goal is to become closer with this girl and potentially get in a relationship. Return your examples in a json object with keys "score" and "reason". Do not add any additional commentary besides the json. \n\nExample:\n\nInput:\nPrevious Message: how are you\nMy Message: good, how was your day tho?\n\nOutput:\n{\n"score": "7",\n"reason": "You were too direct and potentially acting too fast. That previous message maybe wanted you to talk about yourself"\n}';
-const promptResponder = 'You are a young adult female who is texting a guy that is interested in you. You are not interested in him and want to end the conversation. However, you try to be polite until he starts to become aggressive. Text in lower case, use slang, emojis, abbreviations, short sentences, and gramatical errors to make the conversation more realistic (only use emojis when appropriate, not on every message). The conversation ends when he stops texting you. Act like a really dry texter and make it hard for him to figure out a response because your responses are so short. When you do not know the answer, simply say idk. Only respond with the next text in the sequence, assume the most recent text was from him.';
-const promptResponder2 = 'You are the mom of a student who is texting you. Text properly but in a casual manner like a mom would.'
 let previousMessage = '';
+let promptScorer = '';
+let promptResponder = '';
 let messageArray = [];
-let messageMap = {'friend': [], 'mom': []};
-let currentMode = 'friend';
 
 // Define Express application settings
 app.use(cors());
@@ -39,9 +35,9 @@ app.use(session({
     saveUninitialized: true
 }));
 
-const initializeMessages = (prompt) => {
+const initializeMessages = (promptResponder) => {
     messageArray = [
-        { role: 'system', content: prompt },
+        { role: 'system', content: promptResponder },
     ];
 };
 
@@ -58,7 +54,7 @@ const createChatCompletion = async (messages) => {
     });
 };
 
-const rateMessage = async (message) => {
+const rateMessage = async (promptScorer, message) => {
     const formattedMessage = `Previous Message: ${previousMessage}\nMy Message: ${message}`;
     const messages = [
         { role: 'system', content: promptScorer },
@@ -70,7 +66,7 @@ const rateMessage = async (message) => {
 }
 
 app.post('/', async (req, res) => {
-    const { message } = req.body;
+    const {message } = req.body;
     console.log(message);
     if (messageArray.length === 0) {
         initializeMessages(promptResponder);
@@ -80,7 +76,7 @@ app.post('/', async (req, res) => {
     console.log(messageArray);
 
     try {
-        const jsonObject = await rateMessage(message);
+        const jsonObject = await rateMessage(promptScorer, message);
         const score = jsonObject.score;
 
         if (score > 4) {
@@ -102,25 +98,16 @@ app.post('/', async (req, res) => {
     }
 });
 
-app.post('/changeMode', async (req, res) => {
-    const { mode } = req.body;
-    messageMap[currentMode] = messageArray;
-    currentMode = mode;
-    switch (mode) {
-        case 'mom': messageArray = messageMap['mom'];
-            console.log(messageArray);
-            if (messageArray.length === 0) {
-                initializeMessages(promptResponder2);
-            }
-            break;
-        case 'friend': messageArray = messageMap['friend'];
-            if (messageArray.length === 0) {
-                initializeMessages(promptResponder);
-            }
-            break;
-    }
-    console.log(mode);
-});
+app.post('/changeMode', (req, res) => {
+    const { promptScorer: newPromptScorer, promptResponder: newPromptResponder } = req.body;
+    console.log("Mode changed")
+    console.log(newPromptResponder);
+    console.log(newPromptScorer);
+    messageArray = [];
+    promptScorer = newPromptScorer;
+    promptResponder = newPromptResponder;
+    res.json({ success: true });
+  });
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
