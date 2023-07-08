@@ -48,8 +48,10 @@ function App() {
   };
 
   const changeMode = (mode) => {
+    localStorage.setItem(selectedChat, JSON.stringify(convo));
+    console.log(localStorage.getItem(selectedChat));
     setSelectedChat(mode);
-    setConvo([]);
+    localStorage.getItem(mode) !== null ? setConvo(JSON.parse(localStorage.getItem(mode))) : setConvo([]);
     setFeedbackModal(null);
     const promptScorer = dummyData.find(chat => chat.mode === mode).promptScorer;
     const promptResponder = dummyData.find(chat => chat.mode === mode).promptResponder;
