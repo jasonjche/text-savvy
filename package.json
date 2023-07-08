@@ -46,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.2.16",
     "tailwindcss": "^3.3.2"
   }
 }
