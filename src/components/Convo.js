@@ -14,7 +14,7 @@ export default function Convo({ convo }) {
   }, [convo]);
 
   return (
-    <div className="flex flex-col overflow-auto mb-4">
+    <div className="flex flex-col overflow-y-scroll mb-4">
       {convo.map((item, index) => (
         <React.Fragment key={index}>
           <MessageBubble text={item.message} />

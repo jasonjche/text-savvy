@@ -66,7 +66,7 @@ function App() {
       </div>
       <div className='flex flex-col w-3/4'>
         <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
-        <div className="flex-grow flex flex-col">
+        <div className="flex-grow flex flex-col overflow-y-scroll">
           <Convo convo={convo} />
           <div className="mt-auto">
             <MessageForm newMessage={newMessage} setNewMessage={setNewMessage} handleSubmit={handleSubmit} />
