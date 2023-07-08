@@ -34,7 +34,7 @@ function App() {
     e.preventDefault();
     setNewMessage('');
     setConvo(prevConvo => [...prevConvo, { message: newMessage, response: null }]);
-    const response = await fetch(process.env.REACT_APP_API_SITE, {
+    const response = await fetch('https://text-savvy-api.onrender.com/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ function App() {
     setJsonObject(null);
     const promptScorer = test.find(chat => chat.mode === mode).promptScorer;
     const promptResponder = test.find(chat => chat.mode === mode).promptResponder;
-    fetch(process.env.REACT_APP_API_SITE + 'changeMode', {
+    fetch('https://text-savvy-api.onrender.com/changeMode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
