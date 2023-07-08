@@ -9,7 +9,7 @@ const dummyData = require('./dummyData.js');
 function App() {
   const [newMessage, setNewMessage] = useState("");
   const [convo, setConvo] = useState([]);
-  const [jsonObject, setJsonObject] = useState(null);
+  const [feedbackModal, setFeedbackModal] = useState(null);
   const [selectedChat, setSelectedChat] = useState("Friend");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function App() {
         promptResponder: selectedChat,
         message: newMessage }),
     }).then(res => res.json())
-    setJsonObject(response.jsonObject);
+    setFeedbackModal(response.jsonObject);
     setConvo(prevConvo => {
       const convoCopy = [...prevConvo];
       convoCopy[convoCopy.length - 1].response = response.message;
@@ -39,14 +39,18 @@ function App() {
     });
   };
 
+  const resetConvo = () => {
+    setConvo([]);
+  };
+
   const closeBanner = () => {
-    setJsonObject(null);
+    setFeedbackModal(null);
   };
 
   const changeMode = (mode) => {
     setSelectedChat(mode);
     setConvo([]);
-    setJsonObject(null);
+    setFeedbackModal(null);
     const promptScorer = dummyData.find(chat => chat.mode === mode).promptScorer;
     const promptResponder = dummyData.find(chat => chat.mode === mode).promptResponder;
     fetch('http://localhost:3001/changeMode', {
@@ -62,10 +66,11 @@ function App() {
     <div className="text-center flex flex-row h-screen bg-gray-100 px-2 py-4 space-x-3 overflow-hidden">
       <div className='flex flex-col w-1/4 space-y-2'>
         <h1 className="text-left text-4xl font-bold tracking-tight text-gray-900 sm:text-3xl">Text-Savvy</h1>
+        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={resetConvo}>Reset</button>
         <ChatButtonList chatModes={dummyData} selectedChat={selectedChat} changeMode={changeMode} />
       </div>
       <div className='flex flex-col w-3/4'>
-        <Banner jsonObject={jsonObject} closeBanner={closeBanner} />
+        <Banner jsonObject={feedbackModal} closeBanner={closeBanner} />
         <div className="flex-grow flex flex-col overflow-y-scroll">
           <Convo convo={convo} />
           <div className="mt-auto">
