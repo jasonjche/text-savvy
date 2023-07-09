@@ -22,7 +22,7 @@ function App() {
     console.log(newMessage)
     setConvo(prevConvo => [...prevConvo, { message: newMessage, response: null }]);
     setNewMessage('');
-    const response = await fetch('http://localhost:3001/', {
+    const response = await fetch('https://text-savvy-api.onrender.com/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
