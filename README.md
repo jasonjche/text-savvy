@@ -1,5 +1,5 @@
 # Text-Savvy 💬
-Text-Savvy is a web application that helps you improve your communication with different people. With Text-Savvy, you can easily switch between different chat modes and keep track of your conversations with different people.
+Text-Savvy is a web application that helps you improve your communication with different people. With Text-Savvy, you can easily switch between different chat modes and keep track of your conversations with different people..
 
 ## Features 🚀
 * Switch between different chat modes (e.g. Friend, Mom, Dad, Boss, etc.) 🔄
