@@ -15,7 +15,6 @@ function ChatButton({ mode, selectedChat, changeMode, picture = 'pictures/blankp
           <h2 className="font-bold text-lg">{mode}</h2>
           <p className="text-sm">12:34 PM</p>
         </div>
-        <p className="text-sm truncate text-left">Hi there!</p>
       </div>
     </div>
   );
